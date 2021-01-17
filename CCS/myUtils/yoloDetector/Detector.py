@@ -20,7 +20,7 @@ def capture(vid):
 def detect(cid, cap, host):
     global outputFrame, counter
     outputFrame[cid] = cap.read()
-    net = cv2.dnn.readNet("Model/yolov3_model.weights", "Model/yolov3.cfg")
+    net = cv2.dnn.readNet("model/yolov3_model.weights", "model/yolov3.cfg")
     layer_names = net.getLayerNames()
     output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
     conn = Connection(cid, host)
