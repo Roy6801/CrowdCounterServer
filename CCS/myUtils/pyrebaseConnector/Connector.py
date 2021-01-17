@@ -3,7 +3,7 @@ import threading
 import json
 import os
 
-pyrebaseFile = open(os.getcwd()+"/cc-6/pyrebase.json","r")
+pyrebaseFile = open("cc-6/pyrebase.json","r")
 firebaseConfig = json.load(pyrebaseFile)
 pyrebaseFile.close()
 

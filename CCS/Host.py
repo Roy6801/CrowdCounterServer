@@ -11,7 +11,7 @@ import os
 
 
 app = Flask(__name__)
-serverFile = open(os.getcwd()+"/cc-6/server.json","w")
+serverFile = open("cc-6/server.json","w")
 camDict = dict()
 host = dict()
 started = list()
@@ -71,9 +71,10 @@ def deploy(host):
     os.chdir(os.getcwd()+"/cc-6")
     os.system('heroku login -i')
     os.system('git init')
-    os.system('heroku git:remote -a "'+appName+'"')
+    os.system('heroku create '+appName)
     os.system('git add .')
-    os.system('git commit -am "Deploying to web!"')
+    os.system('git commit -m "Deployed to Web!"')
+    os.system('heroku buildpacks:set heroku/python')
     os.system('git push heroku master')
     os.system('heroku open')
     rmtree(os.getcwd()+"/.git")
