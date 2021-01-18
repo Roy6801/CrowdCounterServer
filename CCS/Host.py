@@ -16,6 +16,11 @@ camDict = dict()
 host = dict()
 started = list()
 
+
+os.system('heroku login -i')
+appName = input("\nEnter remote app name = ")
+os.system('heroku apps:destroy '+appName)
+
 while True:
     tempId = input("Enter cam number = ")
     if tempId == "-1":
@@ -65,20 +70,32 @@ def force_start():
     deploy(host)
 
 def deploy(host):
+    global appName
     print("\n\n********** Deploying to Web **********")
-    appName = input("\nEnter remote app name = ")
-    set_app(host,appName)
     os.chdir(os.getcwd()+"/cc-6")
-    os.system('heroku login -i')
     os.system('git init')
+    set_app(host,appName)
     os.system('heroku create '+appName)
     os.system('git add .')
     os.system('git commit -m "Deployed to Web!"')
     os.system('heroku buildpacks:set heroku/python')
-    os.system('git push heroku master')
+    try:
+        os.system('git push heroku master')
+    except:
+        print("\n\nTry another name!!!")
+        return deploy(host)
     os.system('heroku open')
     rmtree(os.getcwd()+"/.git")
     print("\n\n********** Server Online **********")
+    print("\n\n##### Do not kill this Process ####")
+    shut()
+
+def shut():
+    inp = input("\n\n Enter 'y' or 'Y' to close server : ")
+    if inp == "y" or inp == "Y":
+        os.system('heroku apps:destroy '+appName)
+    else:
+        shut()
 
 if __name__ == "__main__":
     threading.Thread(target=force_start).start()
