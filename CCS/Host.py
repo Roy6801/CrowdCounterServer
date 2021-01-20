@@ -75,7 +75,7 @@ def deploy(host):
     os.chdir(os.getcwd()+"/cc-6")
     os.system('git init')
     set_app(host,appName)
-    os.system('heroku create '+appName)
+    os.system('heroku apps:create '+appName)
     os.system('git add .')
     os.system('git commit -m "Deployed to Web!"')
     os.system('heroku buildpacks:set heroku/python')
