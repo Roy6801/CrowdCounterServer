@@ -6,4 +6,3 @@ os.chdir(os.getcwd()+'/CCS')
 print("\n\n********** Initializing *********")
 os.system('heroku login -i')
 os.system('python Host.py')
-o
