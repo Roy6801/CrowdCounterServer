@@ -18,7 +18,10 @@ started = list()
 
 
 os.system('heroku login -i')
-appName = input("\nEnter remote app name = ")
+appName = input("\nEnter Remote App Name = ")
+if appName.islower() != True:
+    appName = appName.lower()
+    print("\n\nRemote App Renamed to : "+appName)
 os.system('heroku apps:destroy '+appName)
 
 while True:
@@ -39,7 +42,7 @@ while True:
 host['ip'] = str(input("Enter Host ip = "))
 host['port'] = int(input("Enter port number = "))
 host['name'] = str(input("Enter server name = "))
-json.dump(host,serverFile)
+json.dump(host, serverFile)
 serverFile.close()
 time.sleep(2.0)
 
@@ -51,7 +54,7 @@ def index():
 
 @app.route("/<vid>")
 def display(vid):
-    global host
+    global host, camDict
     if vid in camDict and vid not in started:
         started.append(vid)
         threading.Thread(target=detect, args=(vid, camDict[vid],host,)).start()
@@ -66,7 +69,8 @@ def force_start():
     global camDict, started, host
     time.sleep(5.0)
     for i in camDict.keys():
-        urllib.request.urlopen("http://"+host['ip']+":"+str(host['port'])+"/"+i)
+        url = "http://"+host['ip']+":"+str(host['port'])+"/"+i
+        urllib.request.urlopen(url)
     deploy(host)
 
 def deploy(host):
@@ -91,7 +95,7 @@ def deploy(host):
     shut()
 
 def shut():
-    inp = input("\n\n Enter 'y' or 'Y' to close server : ")
+    inp = input("\n\nEnter 'y' or 'Y' to close server : ")
     if inp == "y" or inp == "Y":
         os.system('heroku apps:destroy '+appName)
     else:
