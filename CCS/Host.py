@@ -9,7 +9,7 @@ import time
 import json
 import os
 
-o
+
 app = Flask(__name__)
 serverFile = open("cc-6/server.json","w")
 camDict = dict()
@@ -17,7 +17,6 @@ host = dict()
 started = list()
 
 
-os.system('heroku login -i')
 appName = input("\nEnter Remote App Name = ")
 if appName.islower() != True:
     appName = appName.lower()
@@ -54,7 +53,6 @@ def index():
 
 @app.route("/<vid>")
 def display(vid):
-    global host, camDict
     if vid in camDict and vid not in started:
         started.append(vid)
         threading.Thread(target=detect, args=(vid, camDict[vid],host,)).start()
@@ -66,15 +64,13 @@ def display(vid):
 
 
 def force_start():
-    global camDict, started, host
     time.sleep(5.0)
     for i in camDict.keys():
         url = "http://"+host['ip']+":"+str(host['port'])+"/"+i
         urllib.request.urlopen(url)
-    deploy(host)
+    init_service()
 
-def deploy(host):
-    global appName
+def deploy():
     print("\n\n********** Deploying to Web **********")
     os.chdir(os.getcwd()+"/cc-6")
     os.system('git init')
@@ -92,14 +88,23 @@ def deploy(host):
     rmtree(os.getcwd()+"/.git")
     print("\n\n********** Server Online **********")
     print("\n\n##### Do not kill this Process ####")
-    shut()
+    del_service()
 
-def shut():
+
+def init_service():
+    inp = input("\n\nEnter 'y' or 'Y' to deploy web service : ")
+    if inp == "y" or inp == "Y":
+        deploy()
+    else:
+        init_service()
+
+
+def del_service():
     inp = input("\n\nEnter 'y' or 'Y' to close server : ")
     if inp == "y" or inp == "Y":
         os.system('heroku apps:destroy '+appName)
     else:
-        shut()
+        del_service()
 
 if __name__ == "__main__":
     threading.Thread(target=force_start).start()
