@@ -17,6 +17,7 @@ host = dict()
 started = list()
 
 
+os.system('heroku login -i')
 appName = input("\nEnter Remote App Name = ")
 if appName.islower() != True:
     appName = appName.lower()
@@ -53,6 +54,7 @@ def index():
 
 @app.route("/<vid>")
 def display(vid):
+    global host, camDict
     if vid in camDict and vid not in started:
         started.append(vid)
         threading.Thread(target=detect, args=(vid, camDict[vid],host,)).start()
@@ -64,13 +66,15 @@ def display(vid):
 
 
 def force_start():
+    global camDict, started, host
     time.sleep(5.0)
     for i in camDict.keys():
         url = "http://"+host['ip']+":"+str(host['port'])+"/"+i
         urllib.request.urlopen(url)
-    init_service()
+    deploy(host)
 
-def deploy():
+def deploy(host):
+    global appName
     print("\n\n********** Deploying to Web **********")
     os.chdir(os.getcwd()+"/cc-6")
     os.system('git init')
@@ -88,23 +92,14 @@ def deploy():
     rmtree(os.getcwd()+"/.git")
     print("\n\n********** Server Online **********")
     print("\n\n##### Do not kill this Process ####")
-    del_service()
+    shut()
 
-
-def init_service():
-    inp = input("\n\nEnter 'y' or 'Y' to deploy web service : ")
-    if inp == "y" or inp == "Y":
-        deploy()
-    else:
-        init_service()
-
-
-def del_service():
+def shut():
     inp = input("\n\nEnter 'y' or 'Y' to close server : ")
     if inp == "y" or inp == "Y":
         os.system('heroku apps:destroy '+appName)
     else:
-        del_service()
+        shut()
 
 if __name__ == "__main__":
     threading.Thread(target=force_start).start()
