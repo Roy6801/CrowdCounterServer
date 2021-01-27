@@ -9,7 +9,7 @@ import time
 import json
 import os
 
-
+o
 app = Flask(__name__)
 serverFile = open("cc-6/server.json","w")
 camDict = dict()
