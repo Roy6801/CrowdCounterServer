@@ -13,6 +13,7 @@ db = firebase.database()
 def set_app(host,name):
     global db
     db.child("Servers").child(host["name"]).child("app").set(name)
+    db.child("Servers").child(host["name"]).child("appURL").set("https://"+name+".herokuapp.com")
 
 
 class Connection:
