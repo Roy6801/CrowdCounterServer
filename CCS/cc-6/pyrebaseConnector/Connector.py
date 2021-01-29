@@ -24,11 +24,11 @@ class Connection:
         self.camList = db.child("Servers").child(host["name"]).child("Cameras").get()
         for i in self.camList.each():
             self.camDict[i.key()] = i.val()
-        threading.Timer(0.5,self.get_count()).start()
+        threading.Thread(target=self.get_count).start()
 
     def get_total(self):
         self.total = 0
         for i in self.camDict:
             self.total = self.total + int(i)
         self.total_count = str(self.total)
-        threading.Timer(0.5,self.get_total()).start()
+        threading.Thread(target=self.get_total).start()
