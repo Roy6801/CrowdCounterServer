@@ -100,7 +100,7 @@ def init_service():
 
 
 def del_service():
-    inp = input("\n\nEnter 'y' or 'Y' to close server : ")
+    inp = input("\n\nEnter 'y' or 'Y' to shut down service : ")
     if inp == "y" or inp == "Y":
         os.system('heroku apps:destroy '+appName)
     else:
