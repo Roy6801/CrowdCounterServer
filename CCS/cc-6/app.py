@@ -8,14 +8,11 @@ threading.Thread(target=conn.get_count).start()
 
 app = Flask(__name__)
 
-@app.route("/")
-def home():
-    return "Hi"
-
 @app.route("/count")
 def count():
     global conn
-    return render_template("rough.html",dict=camDict)
+    camJSON = json.dumps(conn.camDict)
+    return render_template("index.html",dict=camJSON)
 
 if __name__ == "__main__":
 	app.run(port=environ.get('PORT'),threaded=True)
