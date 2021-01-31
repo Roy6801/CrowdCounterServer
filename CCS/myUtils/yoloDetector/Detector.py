@@ -24,7 +24,6 @@ def detect(cid, cap, host):
     layer_names = net.getLayerNames()
     output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
     conn = Connection(cid, host)
-    threading.Timer(5.0, conn.update_count).start()
     while True:
         img = cap.read()
         height, width, channels = img.shape
