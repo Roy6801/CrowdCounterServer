@@ -16,7 +16,6 @@ camDict = dict()
 host = dict()
 started = list()
 
-
 appName = input("\nEnter Remote App Name = ")
 if appName.islower() != True:
     appName = appName.lower()
