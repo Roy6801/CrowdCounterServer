@@ -18,6 +18,7 @@ class Connection:
     def __init__(self):
         self.camDict = dict()
         self.camList = list()
+        threading.Thread(target=self.get_count).start()
 
     def get_count(self):
         global db, host
@@ -30,5 +31,5 @@ class Connection:
         self.total = 0
         for i in self.camDict:
             self.total = self.total + int(i)
-        self.total_count = str(self.total)
+        db.child("Total").child(host["name"]).set(str(self.total))
         threading.Thread(target=self.get_total).start()
