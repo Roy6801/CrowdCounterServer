@@ -41,6 +41,9 @@ while True:
 host['ip'] = str(input("Enter Host ip = "))
 host['port'] = int(input("Enter port number = "))
 host['name'] = str(input("Enter server name = "))
+host['memory'] = int(input("Enter hitory limit in days (allowed : 1 to 10, default : 3) = "))
+if host['memory'] < 1 or host['memory'] > 10:
+    host['memory'] = 3
 json.dump(host, serverFile)
 serverFile.close()
 time.sleep(2.0)
