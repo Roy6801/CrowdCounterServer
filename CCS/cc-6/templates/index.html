@@ -1,22 +1,27 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-	<meta http-equiv="refresh" content="5">
     <meta charset="utf-8">
     <title>Crowd Counter Web</title>
   </head>
   <body>
     <h1>Crowd Counting</h1>
-	<p id="count" hidden>
+	<div id="count">
 	Count: {{count}}
-	</p>
+	</div>
 	<p id="date"></p>
 	<div id="columns"></div>
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<script>
+	function reload(){
+	$('#count').load("index.html");
+	}
 	var count=document.getElementById("count").innerHTML;
 	var i,x,y,s;
 	setInterval(myTimer,1000);
+	setInterval(reload,5000);
+	setInterval(display,5000);
+	function display(){
 	var crowd=[];
 	while(x!=-1){
 	x = count.search("'");
@@ -41,10 +46,9 @@
 	var chart = new google.visualization.ColumnChart(document.getElementById('columns'));
 	chart.draw(data, options);
 })
-
+}
 function myTimer() {
-  var d = new Date();
-  document.getElementById("date").innerHTML = d;
+  document.getElementById("date").innerHTML = Date();
 }
 	</script>
   </body>
