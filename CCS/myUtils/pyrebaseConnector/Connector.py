@@ -32,9 +32,9 @@ class Connection:
     def update_count(self):
         global db
         db.child("Servers").child(self.host["name"]).child("Cameras").child(self.cid).set(str(self.count))
-        threading.Timer(0.5, self.update_count).start()
+        threading.Thread(target=self.update_count).start()
         timestamp = int(time.time())
-        if timestamp % 300 == 0:
+        if timestamp % 10 == 0:
             threading.Thread(target=self.record,args=(timestamp,)).start()
 
     def record(self, ts):
@@ -46,5 +46,5 @@ class Connection:
         global db
         history = db.child("History").get()
         for i in history:
-            if int(i.key()) < (ts - host["memory"]*86400):
+            if int(i.key()) < (ts - 20):
                 db.child("History").child(i.key()).remove()

@@ -4,9 +4,12 @@ from pyrebaseConnector.Connector import *
 import threading
 
 conn = Connection()
-threading.Thread(target=conn.get_count).start()
 
 app = Flask(__name__)
+
+@app.route()
+def home():
+    return "Hi"
 
 @app.route("/count")
 def count():
