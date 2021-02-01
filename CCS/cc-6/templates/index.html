@@ -1,10 +1,51 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
+	<meta http-equiv="refresh" content="5">
     <meta charset="utf-8">
     <title>Crowd Counter Web</title>
   </head>
   <body>
     <h1>Crowd Counting</h1>
+	<p id="count" hidden>
+	Count: {{co}}
+	</p>
+	<p id="date"></p>
+	<div id="columns"></div>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script>
+	var count=document.getElementById("count").innerHTML;
+	var i,x,y,s;
+	setInterval(myTimer,1000);
+	var crowd=[];
+	while(x!=-1){
+	x = count.search("'");
+	s = count.substring(0,x+1);
+	count=count.replace(s,'');
+	y = count.search("'");
+	s = count.substring(0,y);
+    count=count.replace(count.substring(0,y+1),'');
+    if(s!='')
+	    crowd.push(s);
+	}
+	google.charts.load('current', {'packages':['corechart']});
+	google.charts.setOnLoadCallback(function() {
+	var data = new google.visualization.DataTable();
+	data.addColumn('string', 'Number of people');
+	data.addColumn('number', 'Crowd');
+	for(i=0;i<crowd.length;i+=2)
+	{
+		data.addRows([[crowd[i],parseInt(crowd[i+1],10)]]);
+	}     
+	var options = {'title':'Crowd count of cameras','width':700, 'height':550, vAxis: {title: 'Number of people'}};
+	var chart = new google.visualization.ColumnChart(document.getElementById('columns'));
+	chart.draw(data, options);
+})
+
+function myTimer() {
+  var d = new Date();
+  document.getElementById("date").innerHTML = d;
+}
+	</script>
   </body>
 </html>
