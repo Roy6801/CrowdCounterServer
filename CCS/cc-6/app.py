@@ -11,11 +11,11 @@ app = Flask(__name__)
 def home():
     return "Hi"
 
+
 @app.route("/count")
 def count():
     global conn
-    camJSON = json.dumps(conn.camDict)
-    return render_template("index.html",count=camJSON)
+    return render_template("index.html",co=conn.camDict)
 
 if __name__ == "__main__":
 	app.run(port=environ.get('PORT'),threaded=True)
