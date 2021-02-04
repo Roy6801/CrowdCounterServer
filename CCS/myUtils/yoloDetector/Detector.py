@@ -1,7 +1,5 @@
 from myUtils.pyrebaseConnector.Connector import Connection
 import imutils
-import threading
-import numpy as np
 import cv2
 
 outputFrame = dict()
@@ -27,15 +25,15 @@ def detect(cid, cap, host):
     while True:
         img = cap.read()
         height, width, channels = img.shape
-        blob = cv2.dnn.blobFromImage(img, 0.00392, (160, 160), (0, 0, 0), True, crop=False)
+        blob = cv2.dnn.blobFromImage(img, 0.00392, (host['quality'], host['quality']), (0, 0, 0), True, crop=False)
         net.setInput(blob)
         outs = net.forward(output_layers)
         confidences = []
         boxes = []
+        class_ids = []
         for out in outs:
             for detects in out:
                 scores = detects[5:]
-                class_id = np.argmax(scores)
                 confidence = scores[class_id]
                 if confidence > 0.3:
                     center_x = int(detects[0] * width)

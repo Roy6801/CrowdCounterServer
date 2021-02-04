@@ -40,6 +40,11 @@ while True:
 host['ip'] = str(input("Enter Host ip = "))
 host['port'] = int(input("Enter port number = "))
 host['name'] = str(input("Enter server name = "))
+quality = int(input("Enter input quality parameter (allowed : 1 to 20, default : 15) = "))
+if quality < 1 or quality > 20:
+    host['quality'] = 480
+else:
+    host['quality'] = quality*32
 host['memory'] = int(input("Enter history limit in days (allowed : 1 to 10, default : 3) = "))
 if host['memory'] < 1 or host['memory'] > 10:
     host['memory'] = 3
