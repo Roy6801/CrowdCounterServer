@@ -1,5 +1,6 @@
 from myUtils.pyrebaseConnector.Connector import Connection
 import imutils
+import numpy as np
 import cv2
 
 outputFrame = dict()
@@ -9,31 +10,33 @@ counter = 0
 def capture(vid):
     global outputFrame
     print(vid)
-    while True:
-        img = outputFrame[vid]
-        flag, eImg = cv2.imencode(".jpg", img)
-        yield b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(eImg) + b'\r\n'
+    if vid in outputFrame:
+        while True:
+            img = outputFrame[vid]
+            flag, eImg = cv2.imencode(".jpg", img)
+            yield b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(eImg) + b'\r\n'
 
 
 def detect(cid, cap, host):
     global outputFrame, counter
-    outputFrame[cid] = cap.read()
     net = cv2.dnn.readNet("model/yolov3_model.weights", "model/yolov3.cfg")
     layer_names = net.getLayerNames()
     output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
     conn = Connection(cid, host)
     while True:
         img = cap.read()
+        if img is None:
+            continue
         height, width, channels = img.shape
-        blob = cv2.dnn.blobFromImage(img, 0.00392, (host['quality'], host['quality']), (0, 0, 0), True, crop=False)
+        blob = cv2.dnn.blobFromImage(img, 0.00392, (host["quality"], host["quality"]), (0, 0, 0), True, crop=False)
         net.setInput(blob)
         outs = net.forward(output_layers)
         confidences = []
         boxes = []
-        class_ids = []
         for out in outs:
             for detects in out:
                 scores = detects[5:]
+                class_id = np.argmax(scores)
                 confidence = scores[class_id]
                 if confidence > 0.3:
                     center_x = int(detects[0] * width)
@@ -52,5 +55,4 @@ def detect(cid, cap, host):
             if i in indexes:
                 x, y, w, h = boxes[i]
                 cv2.rectangle(img, (x, y), (x + w, y + h), (69, 177, 255), 2)
-        img = imutils.resize(img, width=500)
-        outputFrame[cid] = img.copy()
+        outputFrame[cid] = imutils.resize(img, width=500)

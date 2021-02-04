@@ -36,6 +36,8 @@ while True:
     capt = VideoStream(src=cam).start()
     cid = "f"+flr+"s"+shp+"c"+tempId
     camDict[cid] = capt
+    if camDict[cid].read() is None:
+        del camDict[cid]
 
 host['ip'] = str(input("Enter Host ip = "))
 host['port'] = int(input("Enter port number = "))
@@ -67,15 +69,18 @@ def display(vid):
     elif vid in camDict and vid in started:
         return Response(capture(vid), mimetype="multipart/x-mixed-replace; boundary=frame")
     else:
-        return "No Connection " + vid + " Found!!"
+        return "<html><H1>No Connection " + vid + " Found!!</H1></html>"
 
 
 def force_start():
-    time.sleep(5.0)
     for i in camDict.keys():
         url = "http://"+host['ip']+":"+str(host['port'])+"/"+i
-        urllib.request.urlopen(url)
+        try:
+            urllib.request.urlopen(url)
+        except:
+            print("Trying to connect to : "+url)
     init_service()
+
 
 def deploy():
     print("\n\n********** Deploying to Web **********")
@@ -114,5 +119,5 @@ def del_service():
         del_service()
 
 if __name__ == "__main__":
-    threading.Thread(target=force_start).start()
+    threading.Timer(2.0,force_start).start()
     app.run(host=host['ip'], port=host['port'], debug=False, threaded=True, use_reloader=False)
