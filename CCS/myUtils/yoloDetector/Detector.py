@@ -38,7 +38,7 @@ def detect(cid, cap, host):
                 scores = detects[5:]
                 class_id = np.argmax(scores)
                 confidence = scores[class_id]
-                if confidence > 0.3:
+                if confidence > 0.7:
                     center_x = int(detects[0] * width)
                     center_y = int(detects[1] * height)
                     w = int(detects[2] * width)
@@ -47,7 +47,7 @@ def detect(cid, cap, host):
                     y = int(center_y - h / 2)
                     boxes.append([x, y, w, h])
                     confidences.append(float(confidence))
-        indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.5, 0.4)
+        indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.9, 0.7)
         counter = range(len(boxes))
         if len(counter) != 0:
             conn.set_count(counter[-1])
