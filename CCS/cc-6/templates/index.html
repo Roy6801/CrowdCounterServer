@@ -6,7 +6,7 @@
   </head>
   <body>
     <h1>Crowd Counting</h1>
-  <p id="chart"></p>
+	<p id="chart"></p>
 	<p id="date"></p>
 	<div id="columns"></div>
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -14,7 +14,8 @@
 	<script>
   var crowd = [];
   var count = 0;
-  setInterval(display,1000)
+  setInterval(display,5000)
+  setInterval(myTimer,1000)
   setInterval(function() {
     $.ajax({
       type: "GET",
@@ -25,20 +26,25 @@
         count = get_count;
         });
   }, 1000);
-
-
 function display() {
-  google.charts.load('current', {'packages':['corechart']});
+	google.charts.load('current', {'packages':['corechart']});
 	google.charts.setOnLoadCallback(function() {
-    var data = new google.visualization.DataTable();
-    for(i in count)
+	var data = new google.visualization.DataTable();
+	data.addColumn('string', 'Number of people');
+	data.addColumn('number', 'Crowd');
+	for(i in count)
     {
-      data.addColumn(i,count[i]);
-    }
-    var options = {'title':'Crowd count of cameras','width':700, 'height':550, vAxis: {title: 'Number of people'}};
-    var chart = new google.visualization.ColumnChart(document.getElementById('chart'));
-    chart.draw(data, options);
-  }
+	  data.addRows([[String(i),parseInt(count[i])]]);
+	}
+	var options = {'title':'Crowd count of cameras','width':700, 'height':550, vAxis: {title: 'Number of people'}};
+	var chart = new google.visualization.ColumnChart(document.getElementById('columns'));
+	chart.draw(data, options);
+})
+}
+display();
+function myTimer() {
+  var d = new Date();
+  document.getElementById("date").innerHTML = d;
 }
 	</script>
   </body>
