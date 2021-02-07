@@ -10,6 +10,8 @@ pyrebaseFile.close()
 
 firebase = pyrebase.initialize_app(firebaseConfig)
 db = firebase.database()
+counter = 0
+
 
 def set_app(host,name):
     global db
@@ -20,6 +22,7 @@ def set_app(host,name):
 class Connection:
     def __init__(self, cid, host):
         global db
+        self.plots = dict()
         self.count = ""
         self.cid = cid
         self.host = host
@@ -38,13 +41,21 @@ class Connection:
             threading.Thread(target=self.record,args=(timestamp,)).start()
 
     def record(self, ts):
-        global db
-        db.child("History").child(ts).child("Servers").child(self.host["name"]).child("Cameras").child(self.cid).set(str(self.count))
+        global db, counter
+        total = db.child("Hosts").child(self.host["name"]).get()
+        if total.val() is not None:
+            self.plots[int(ts)] = int(total.val())
+            counter = counter + 1
+        if counter == 6:
+            with open(self.host["name"]+".json","w") as file:
+                json.dump(self.plots,file)
+            counter = 0
         self.erase(ts)
 
     def erase(self, ts):
-        global db
-        history = db.child("History").get()
-        for i in history:
-            if int(i.key()) < (ts - 20):
-                db.child("History").child(i.key()).remove()
+        temp = list()
+        for i in self.plots:
+            if i < (ts - 50):
+                temp.append(i)
+        for j in temp:
+            del self.plots[j]

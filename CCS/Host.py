@@ -22,6 +22,11 @@ if appName.islower() != True:
     print("\n\nRemote App Renamed to : "+appName)
 os.system('heroku apps:destroy '+appName)
 
+
+host['name'] = str(input("Enter server name = "))
+host['ip'] = str(input("Enter Host ip = "))
+host['port'] = int(input("Enter port number = "))
+
 while True:
     tempId = input("Enter cam number = ")
     if tempId == "-1":
@@ -39,9 +44,7 @@ while True:
     if camDict[cid].read() is None:
         del camDict[cid]
 
-host['ip'] = str(input("Enter Host ip = "))
-host['port'] = int(input("Enter port number = "))
-host['name'] = str(input("Enter server name = "))
+
 quality = int(input("Enter input quality parameter (allowed : 1 to 20, default : 15) = "))
 if quality < 1 or quality > 20:
     host['quality'] = 480
