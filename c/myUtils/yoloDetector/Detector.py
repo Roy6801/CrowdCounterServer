@@ -1,10 +1,11 @@
 from myUtils.pyrebaseConnector.Connector import Connection
+from myUtils.dataProcessor.Processor import process_data
 import imutils
 import numpy as np
+import time
 import cv2
 
 outputFrame = dict()
-counter = 0
 
 
 def capture(vid):
@@ -18,12 +19,16 @@ def capture(vid):
 
 
 def detect(cid, cap, host):
-    global outputFrame, counter
+    global outputFrame
     net = cv2.dnn.readNet("model/yolov3_model.weights", "model/yolov3.cfg")
     layer_names = net.getLayerNames()
     output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
     conn = Connection(cid, host)
+    counter = 0
+    data_arr = []
+    fps = 10
     while True:
+        start = time.time()
         img = cap.read()
         if img is None:
             continue
@@ -38,7 +43,7 @@ def detect(cid, cap, host):
                 scores = detects[5:]
                 class_id = np.argmax(scores)
                 confidence = scores[class_id]
-                if confidence > 0.7:
+                if confidence > 0.5:
                     center_x = int(detects[0] * width)
                     center_y = int(detects[1] * height)
                     w = int(detects[2] * width)
@@ -47,12 +52,18 @@ def detect(cid, cap, host):
                     y = int(center_y - h / 2)
                     boxes.append([x, y, w, h])
                     confidences.append(float(confidence))
-        indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.9, 0.7)
+        indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.5, 0.4)
         counter = range(len(boxes))
         if len(counter) != 0:
-            conn.set_count(counter[-1])
+            data_arr = np.append(data_arr,counter[-1])
+            data_arr, result_count = process_data(data_arr, fps)
+            conn.set_count(result_count)
         for i in counter:
             if i in indexes:
                 x, y, w, h = boxes[i]
                 cv2.rectangle(img, (x, y), (x + w, y + h), (69, 177, 255), 2)
         outputFrame[cid] = imutils.resize(img, width=500)
+        try:
+            fps = 1/(time.time()-start)
+        except:
+            fps = 10
