@@ -1,7 +1,7 @@
+/ccs/myUtils/dataProcessor/__pycache__
 /ccs/myUtils/pyrebaseConnector/__pycache__
 /ccs/myUtils/yoloDetector/__pycache__
 /ccs/cc-6/pyrebaseConnector/__pycache__
 /ccs/model/yolov3_model.weights
 /ccs/cc-6/*.json
-/ccs/*.json
 /*.jpg
