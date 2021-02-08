@@ -50,9 +50,7 @@ if quality < 1 or quality > 20:
     host['quality'] = 480
 else:
     host['quality'] = quality*32
-host['memory'] = int(input("Enter history limit in days (allowed : 1 to 10, default : 3) = "))
-if host['memory'] < 1 or host['memory'] > 10:
-    host['memory'] = 3
+
 json.dump(host, serverFile)
 serverFile.close()
 time.sleep(2.0)
