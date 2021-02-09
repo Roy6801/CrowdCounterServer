@@ -23,8 +23,9 @@ plots = dict()
 counter = 0
 
 def plotter():
-    temp = []
     global db, storage, plots
+    file = str(int(time.time()))
+    temp = []
     plt.clf()
     for i in plots:
         temp.append(process_time(i))
@@ -35,7 +36,6 @@ def plotter():
     fig.suptitle('Crowd Count vs Time', fontsize=28)
     fig.set_size_inches(18.5, 10.5)
     fig.savefig(host["name"]+"_plot.jpg")
-    file = str(int(time.time()))
     storage.child(host["name"]).child(file+".jpg").put(host["name"]+"_plot.jpg")
     url = storage.child(host["name"]).child(file+".jpg").get_url(None)
     db.child("History").child(host["name"]).child(file).set(url)
@@ -71,5 +71,5 @@ def erase(ts):
 
 modify_plots()
 while True:
-    plotter()
-    time.sleep(30.0)
+    if int(time.time()) % 30 == 0:
+        plotter()

@@ -2,11 +2,12 @@ import numpy as np
 import time
 
 def process_data(data_arr, fps):
-    if data_arr.size > 5*int(round(fps)):
-        arr = np.delete(data_arr, 0)
-        return arr, int(round(np.sqrt(np.mean(arr**2))))
+    n_arr = np.array(data_arr)
+    if len(data_arr) > 5*int(round(fps)):
+        del data_arr[0]
+        return data_arr, int(round(np.sqrt(np.mean(n_arr**2))))
     else:
-        return data_arr, int(round(np.sqrt(np.mean(data_arr**2))))
+        return data_arr, int(round(np.sqrt(np.mean(n_arr**2))))
 
 
 def process_time(ts):
