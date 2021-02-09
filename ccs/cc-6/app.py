@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Hi"
+    return render_template("CCC13.html")
 
 
 @app.route("/count_path")
