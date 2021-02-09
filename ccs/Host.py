@@ -26,6 +26,7 @@ os.system('heroku apps:destroy '+appName)
 host['name'] = str(input("Enter server name = "))
 host['ip'] = str(input("Enter Host ip = "))
 host['port'] = int(input("Enter port number = "))
+host['coverage'] = float(input("Enter area coverage for the server = "))
 
 while True:
     tempId = input("Enter cam number = ")
@@ -58,7 +59,7 @@ time.sleep(2.0)
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("CCC13.html")
 
 
 @app.route("/<vid>")
