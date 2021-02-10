@@ -5,3 +5,4 @@ imutils
 numpy==1.19.3
 opencv-python
 urllib3==1.26.2
+matplotlib
