@@ -1,4 +1,4 @@
-from ccs.myUtils.dataProcessor.Processor import process_time
+from myUtils.dataProcessor.Processor import process_time
 from matplotlib import pyplot as plt
 import pyrebase
 import threading
@@ -6,13 +6,12 @@ import json
 import time
 import os
 
-pyrebaseFile = open("ccs/cc-6/pyrebase.json","r")
+pyrebaseFile = open("cc-6/pyrebase.json","r")
 firebaseConfig = json.load(pyrebaseFile)
 pyrebaseFile.close()
-serverFile = open("ccs/cc-6/server.json","r")
+serverFile = open("cc-6/server.json","r")
 host = json.load(serverFile)
 serverFile.close()
-
 
 firebase = pyrebase.initialize_app(firebaseConfig)
 db = firebase.database()
