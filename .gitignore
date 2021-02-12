@@ -4,4 +4,4 @@
 /ccs/cc-6/pyrebaseConnector/__pycache__
 /ccs/model/yolov3_model.weights
 /ccs/cc-6/*.json
-/*.jpg
+/ccs/*.jpg
