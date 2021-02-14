@@ -2,7 +2,5 @@ flask
 GitPython
 imutils
 matplotlib
-numpy==1.19.3
-opencv-python
 pyrebase4
 urllib3==1.26.2
