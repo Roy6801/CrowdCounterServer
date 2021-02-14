@@ -46,8 +46,8 @@ while True:
         del camDict[cid]
 
 
-quality = int(input("Enter input quality parameter (allowed : 1 to 20, default : 15) = "))
-if quality < 1 or quality > 20:
+quality = int(input("Enter input quality parameter (allowed : 1 to 60, default : 15) = "))
+if quality < 1 or quality > 40:
     host['quality'] = 480
 else:
     host['quality'] = quality*32
