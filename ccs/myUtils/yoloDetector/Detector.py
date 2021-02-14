@@ -8,7 +8,6 @@ import cv2
 
 
 outputFrame = dict()
-lock = threading.Lock()
 
 
 def capture(vid):
@@ -16,11 +15,10 @@ def capture(vid):
     print(vid)
     if vid in outputFrame:
         while True:
-            with lock:
-                img = outputFrame[vid]
-                flag, eImg = cv2.imencode(".jpg", img)
-                if not flag:
-                    continue
+            img = outputFrame[vid]
+            flag, eImg = cv2.imencode(".jpg", img)
+            if not flag:
+                continue
             yield b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(eImg) + b'\r\n'
 
 
@@ -69,8 +67,7 @@ def detect(cid, cap, host):
                 x, y, w, h = boxes[i]
                 cv2.rectangle(img, (x, y), (x + w, y + h), (69, 177, 255), 2)
                 cv2.putText(img, str(round(confidences[i],2)), (x, y + 30), cv2.FONT_HERSHEY_SIMPLEX, 2, (69, 177, 255), 2)
-        with lock:
-            outputFrame[cid] = imutils.resize(img, width=500)
+        outputFrame[cid] = imutils.resize(img, width=500)
         try:
             fps = 1/(time.time()-start)
         except:
