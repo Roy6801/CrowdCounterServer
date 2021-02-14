@@ -9,6 +9,7 @@ import cv2
 
 outputFrame = dict()
 
+
 def capture(vid):
     global outputFrame
     print(vid)
