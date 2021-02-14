@@ -2,10 +2,13 @@ from myUtils.pyrebaseConnector.Connector import Connection
 from myUtils.dataProcessor.Processor import process_data
 import imutils
 import numpy as np
+import threading
 import time
 import cv2
 
+
 outputFrame = dict()
+lock = threading.Lock()
 
 
 def capture(vid):
@@ -13,13 +16,16 @@ def capture(vid):
     print(vid)
     if vid in outputFrame:
         while True:
-            img = outputFrame[vid]
-            flag, eImg = cv2.imencode(".jpg", img)
+            with lock:
+                img = outputFrame[vid]
+                flag, eImg = cv2.imencode(".jpg", img)
+                if not flag:
+                    continue
             yield b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(eImg) + b'\r\n'
 
 
 def detect(cid, cap, host):
-    global outputFrame
+    global outputFrame, lock
     net = cv2.dnn.readNet("model/yolov3_model.weights", "model/yolov3.cfg")
     layer_names = net.getLayerNames()
     output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
@@ -62,7 +68,9 @@ def detect(cid, cap, host):
             if i in indexes:
                 x, y, w, h = boxes[i]
                 cv2.rectangle(img, (x, y), (x + w, y + h), (69, 177, 255), 2)
-        outputFrame[cid] = imutils.resize(img, width=500)
+                cv2.putText(img, str(round(confidences[i],2)), (x, y + 30), cv2.FONT_HERSHEY_SIMPLEX, 2, (69, 177, 255), 2)
+        with lock:
+            outputFrame[cid] = imutils.resize(img, width=500)
         try:
             fps = 1/(time.time()-start)
         except:
