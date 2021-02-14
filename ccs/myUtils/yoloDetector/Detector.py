@@ -2,7 +2,6 @@ from myUtils.pyrebaseConnector.Connector import Connection
 from myUtils.dataProcessor.Processor import process_data
 import imutils
 import numpy as np
-import threading
 import time
 import cv2
 
