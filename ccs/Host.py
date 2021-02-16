@@ -26,7 +26,9 @@ os.system('heroku apps:destroy '+appName)
 host['name'] = str(input("Enter server name = "))
 host['ip'] = str(input("Enter Host ip = "))
 host['port'] = int(input("Enter port number = "))
-host['coverage'] = float(input("Enter area coverage for the server = "))
+host['coverage'] = double(input("Enter area coverage for the server in sq. ft. (Default : 1 sq. ft.) = "))
+if host['coverage'] < 1.0 :
+    host['coverage'] = 1.0
 
 while True:
     tempId = input("Enter cam number = ")
