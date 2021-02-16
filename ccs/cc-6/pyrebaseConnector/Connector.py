@@ -36,5 +36,5 @@ class Connection:
                 self.total = self.total + int(self.camDict[i])
             except:
                 break
-        db.child("Hosts").child(host["name"]).set(str(self.total))
+        db.child("Hosts").child(host["name"]).set(str(self.total/host["coverage"]))
         threading.Thread(target=self.get_total).start()
