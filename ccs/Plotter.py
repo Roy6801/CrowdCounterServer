@@ -32,7 +32,7 @@ def plotter():
     plt.xlabel('Time', fontsize=18)
     plt.ylabel('Count', fontsize=20)
     fig = plt.gcf()
-    fig.suptitle('Crowd Count vs Time', fontsize=28)
+    fig.suptitle('Crowd Count vs Time ('+host["name"]+")", fontsize=28)
     fig.set_size_inches(18.5, 10.5)
     fig.savefig(host["name"]+"_plot.jpg")
     storage.child(host["name"]).child(file+".jpg").put(host["name"]+"_plot.jpg")
