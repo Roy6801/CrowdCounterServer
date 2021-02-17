@@ -26,7 +26,7 @@ os.system('heroku apps:destroy '+appName)
 host['name'] = str(input("Enter server name = "))
 host['ip'] = str(input("Enter Host ip = "))
 host['port'] = int(input("Enter port number = "))
-host['coverage'] = input("Enter area coverage for the server in sq. m. (Default : 1 sq. m.) = ")
+host['coverage'] = float(input("Enter area coverage for the server in sq. m. (Default : 1 sq. m.) = "))
 if host['coverage'] < 1.0 :
     host['coverage'] = 1.0
 
