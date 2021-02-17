@@ -48,10 +48,11 @@ def modify_plots():
 
 
 def record(ts):
-    global db, counter, plots
+    global db, counter, plots, host
     total = db.child("Hosts").child(host["name"]).get()
     if total.val() is not None:
-        plots[int(ts)] = int(total.val())
+        total = float(total.val()) * host["coverage"]
+        plots[int(ts)] = int(round(total))
         counter = counter + 1
     if counter == 5:
         counter = 0
