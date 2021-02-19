@@ -24,7 +24,7 @@ class Connection:
     def get_count(self):
         global db, host
         self.camList = db.child("Servers").child(host["name"]).child("Cameras").get()
-        for i in self.camList.each():
+        for i in self.camList:
             self.camDict[i.key()] = i.val()
         threading.Thread(target=self.get_count).start()
 
