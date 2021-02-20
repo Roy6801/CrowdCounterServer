@@ -29,6 +29,7 @@ host['port'] = int(input("Enter port number = "))
 host['coverage'] = float(input("Enter area coverage for the server in sq. m. (Default : 1 sq. m.) = "))
 if host['coverage'] < 1.0 :
     host['coverage'] = 1.0
+host['type'] = "deployed"
 
 while True:
     tempId = input("Enter cam number = ")
