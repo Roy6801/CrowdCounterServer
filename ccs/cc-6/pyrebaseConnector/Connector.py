@@ -24,8 +24,11 @@ class Connection:
     def get_count(self):
         global db, host
         self.camList = db.child("Servers").child(host["name"]).child("Cameras").get()
-        for i in self.camList:
-            self.camDict[i.key()] = i.val()
+        if self.camList is not None:
+            for i in self.camList:
+                if i is None:
+                    continue
+                self.camDict[i.key()] = i.val()
         threading.Thread(target=self.get_count).start()
 
     def get_total(self):
