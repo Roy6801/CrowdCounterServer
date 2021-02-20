@@ -2,7 +2,6 @@ from myUtils.yoloDetector.Detector import *
 from myUtils.pyrebaseConnector.Connector import set_app
 from imutils.video import VideoStream
 from flask import Flask, Response, render_template
-from git import rmtree
 import urllib
 import threading
 import time
@@ -16,12 +15,6 @@ camDict = dict()
 host = dict()
 started = list()
 
-appName = input("\nEnter Remote App Name = ")
-if appName.islower() != True:
-    appName = appName.lower()
-    print("\n\nRemote App Renamed to : "+appName)
-os.system('heroku apps:destroy '+appName)
-
 
 host['name'] = str(input("Enter server name = "))
 host['ip'] = str(input("Enter Host ip = "))
@@ -29,7 +22,7 @@ host['port'] = int(input("Enter port number = "))
 host['coverage'] = float(input("Enter area coverage for the server in sq. m. (Default : 1 sq. m.) = "))
 if host['coverage'] < 1.0 :
     host['coverage'] = 1.0
-host['type'] = "deployed"
+host['type'] = "local"
 
 while True:
     tempId = input("Enter cam number = ")
@@ -87,41 +80,13 @@ def force_start():
     init_service()
 
 
-def deploy():
-    print("\n\n********** Deploying to Web **********")
-    os.chdir(os.getcwd()+"/cc-6")
-    os.system('git init')
-    set_app(host,appName)
-    os.system('heroku apps:create '+appName)
-    os.system('git add .')
-    os.system('git commit -m "Deployed to Web!"')
-    os.system('heroku buildpacks:set heroku/python')
-    try:
-        os.system('git push heroku master')
-    except:
-        print("\n\nTry another name!!!")
-        return deploy(host)
-    os.system('heroku open')
-    rmtree(os.getcwd()+"/.git")
-    print("\n\n********** Server Online **********")
-    print("\n\n##### Do not kill this Process ####")
-    del_service()
-
-
 def init_service():
-    inp = input("\n\nEnter 'y' or 'Y' to deploy web service : ")
-    if inp == "y" or inp == "Y":
-        deploy()
-    else:
-        init_service()
+    os.chdir(os.getcwd()+'/cc-6')
+    os.system('virtualenv venv_local')
+    os.system('venv_local\\Scripts\\pip3 install -r requirements.txt')
+    print("\n\n********** Initializing *********")
+    os.system('venv_local\\Scripts\\python app.py')
 
-
-def del_service():
-    inp = input("\n\nEnter 'y' or 'Y' to shut down service : ")
-    if inp == "y" or inp == "Y":
-        os.system('heroku apps:destroy '+appName)
-    else:
-        del_service()
 
 if __name__ == "__main__":
     threading.Timer(2.0,force_start).start()

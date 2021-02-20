@@ -1,4 +1,3 @@
-from os import environ
 from flask import Flask, render_template
 from pyrebaseConnector.Connector import *
 import threading
@@ -26,4 +25,4 @@ def count():
     return render_template("index.html")
 
 if __name__ == "__main__":
-	app.run(port=environ.get('PORT'),threaded=True)
+	app.run('0.0.0.0',threaded=True)

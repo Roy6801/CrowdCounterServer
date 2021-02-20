@@ -1,4 +1,4 @@
 import os
 
 os.chdir(os.getcwd()+'/ccs')
-os.system('venv\\Scripts\\python Mall_Area.py')
+os.system('venv_local\\Scripts\\python Mall_Area.py')
