@@ -2,12 +2,11 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Crowd Counter Web</title>
   </head>
   <body>
     <h1>Crowd Counting</h1>
-	<p id="chart"></p>
 	<p id="date"></p>
 	<div id="columns"></div>
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -15,7 +14,7 @@
 	<script>
   var crowd = [];
   var count = 0;
-  setInterval(display,5000)
+  setInterval(display,3000)
   setInterval(myTimer,1000)
   setInterval(function() {
     $.ajax({
@@ -37,7 +36,7 @@ function display() {
     {
 	  data.addRows([[String(i),parseInt(count[i])]]);
 	}
-	var options = {'title':'Crowd count of cameras','width':700, 'height':550, vAxis: {title: 'Number of people'}};
+	var options = {'title':'Crowd count of cameras','width':screen.width, 'height':550, vAxis: {title: 'Number of people'}};
 	var chart = new google.visualization.ColumnChart(document.getElementById('columns'));
 	chart.draw(data, options);
 })
