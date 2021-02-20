@@ -1,5 +1,4 @@
 flask
-GitPython
 imutils
 matplotlib
 pyrebase4
