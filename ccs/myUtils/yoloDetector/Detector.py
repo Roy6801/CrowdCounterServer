@@ -22,7 +22,7 @@ def capture(vid):
 
 
 def detect(cid, cap, host):
-    global outputFrame, lock
+    global outputFrame
     net = cv2.dnn.readNet("model/yolov3_model.weights", "model/yolov3.cfg")
     net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
     net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
@@ -61,7 +61,7 @@ def detect(cid, cap, host):
         counter = range(len(boxes))
         if len(counter) != 0:
             data_arr.append(counter[-1])
-            data_arr, result_count = process_data(data_arr, fps)
+            data_arr, result_count = process_data(data_arr, fps, host['precision'])
             conn.set_count(result_count)
         for i in counter:
             if i in indexes:

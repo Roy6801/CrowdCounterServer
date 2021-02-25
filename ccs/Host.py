@@ -23,6 +23,7 @@ host['coverage'] = float(input("Enter area coverage for the server in sq. m. (De
 if host['coverage'] < 1.0 :
     host['coverage'] = 1.0
 host['type'] = "local"
+host['precision'] = float(input("Enter mAP of model = "))
 
 while True:
     tempId = input("Enter cam number = ")
