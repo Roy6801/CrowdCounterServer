@@ -37,6 +37,7 @@ else:
     serverFile = open("cc-6/server.json","r")
     host = json.load(serverFile)
 
+serverFile.close()
 
 while True:
     tempId = input("Enter cam number = ")
@@ -54,7 +55,7 @@ while True:
     camDict[cid] = capt
     if camDict[cid].read() is None:
         del camDict[cid]
-serverFile.close()
+
 time.sleep(4.0)
 
 

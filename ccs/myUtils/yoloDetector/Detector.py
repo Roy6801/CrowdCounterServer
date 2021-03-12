@@ -32,6 +32,7 @@ def detect(cid, cap, host):
     counter = 0
     classes = ["Body", "Head"]
     itr = 0
+    fps = 10
     while True:
         start = time.time()
         img = cap.read()
@@ -84,13 +85,15 @@ def detect(cid, cap, host):
         if len(counter) != 0:
             if counter[-1] > len(temp):
                 conn.set_count(counter[-1] - len(temp))
-                cv2.putText(img, "Count : "+str(counter[-1] - len(temp)), (int(0.1*width), int(0.1*height)), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 0), 2)
+                cv2.putText(img, "Count : "+str(counter[-1] - len(temp)), (int(0.05*width), int(0.1*height)), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
             else:
                 conn.set_count(counter[-1])
-                cv2.putText(img, "Count : "+str(counter[-1]), (int(0.1*width), int(0.1*height)), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 0), 2)
+                cv2.putText(img, "Count : "+str(counter[-1]), (int(0.05*width), int(0.1*height)), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+        cv2.putText(img, "FPS : "+str(round(fps, 2)), (int(0.6*width), int(0.1*height)), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
         for i in counter:
             if i in indexes and i not in temp:
                 x, y, w, h = boxes[i]
                 cv2.rectangle(img, (x, y), (x + w, y + h), (0, 98, 255), 2)
         outputFrame[cid] = imutils.resize(img, width=500)
         itr = 0
+        fps = 1/(time.time() - start)
