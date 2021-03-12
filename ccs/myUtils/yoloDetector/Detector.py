@@ -1,5 +1,5 @@
 from myUtils.pyrebaseConnector.Connector import Connection
-from myUtils.dataProcessor.Processor import process_data
+from myUtils.dataProcessor.Processor import overlap
 import imutils
 import numpy as np
 import time
@@ -30,12 +30,15 @@ def detect(cid, cap, host):
     output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
     conn = Connection(cid, host)
     counter = 0
-    data_arr = []
-    fps = 10
+    classes = ["Body", "Head"]
+    itr = 0
     while True:
         start = time.time()
         img = cap.read()
         if img is None:
+            continue
+        itr += 1
+        if itr % 5 != 0:
             continue
         height, width, channels = img.shape
         blob = cv2.dnn.blobFromImage(img, 0.00392, (host["quality"], host["quality"]), (0, 0, 0), True, crop=False)
@@ -43,12 +46,13 @@ def detect(cid, cap, host):
         outs = net.forward(output_layers)
         confidences = []
         boxes = []
+        class_ids = []
         for out in outs:
             for detects in out:
                 scores = detects[5:]
                 class_id = np.argmax(scores)
                 confidence = scores[class_id]
-                if confidence > 0.57:
+                if confidence > 0.73:
                     center_x = int(detects[0] * width)
                     center_y = int(detects[1] * height)
                     w = int(detects[2] * width)
@@ -57,19 +61,36 @@ def detect(cid, cap, host):
                     y = int(center_y - h / 2)
                     boxes.append([x, y, w, h])
                     confidences.append(float(confidence))
-        indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.57, 0.45)
+                    class_ids.append(class_id)
+        indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.73, 0.6)
         counter = range(len(boxes))
-        if len(counter) != 0:
-            data_arr.append(counter[-1])
-            data_arr, result_count = process_data(data_arr, fps, host['precision'])
-            conn.set_count(result_count)
+        head = []
+        head_id = []
+        body = []
+        temp = set()
         for i in counter:
             if i in indexes:
+                label = str(classes[class_ids[i]])
+                if label == "Head":
+                    head.append(boxes[i])
+                    head_id.append(i)
+                else:
+                    body.append(boxes[i])
+        for (i,k) in zip(head,head_id):
+            for j in body:
+                iou = overlap(i, j)
+                if iou > 30.0:
+                    temp.add(k)
+        if len(counter) != 0:
+            if counter[-1] > len(temp):
+                conn.set_count(counter[-1] - len(temp))
+                cv2.putText(img, "Count : "+str(counter[-1] - len(temp)), (int(0.1*width), int(0.1*height)), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 0), 2)
+            else:
+                conn.set_count(counter[-1])
+                cv2.putText(img, "Count : "+str(counter[-1]), (int(0.1*width), int(0.1*height)), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 0), 2)
+        for i in counter:
+            if i in indexes and i not in temp:
                 x, y, w, h = boxes[i]
-                cv2.rectangle(img, (x, y), (x + w, y + h), (69, 177, 255), 2)
-                cv2.putText(img, str(round(confidences[i],2)), (x, y + 30), cv2.FONT_HERSHEY_SIMPLEX, 2, (69, 177, 255), 2)
+                cv2.rectangle(img, (x, y), (x + w, y + h), (0, 98, 255), 2)
         outputFrame[cid] = imutils.resize(img, width=500)
-        try:
-            fps = 1/(time.time()-start)
-        except:
-            fps = 10
+        itr = 0

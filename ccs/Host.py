@@ -10,20 +10,33 @@ import os
 
 
 app = Flask(__name__)
-serverFile = open("cc-6/server.json","w")
 camDict = dict()
 host = dict()
 started = list()
 
+loadFrom = input("\n\nLoad last saved server? (y/n) - ")
 
-host['name'] = str(input("Enter server name = "))
-host['ip'] = str(input("Enter Host ip = "))
-host['port'] = int(input("Enter port number = "))
-host['coverage'] = float(input("Enter area coverage for the server in sq. m. (Default : 1 sq. m.) = "))
-if host['coverage'] < 1.0 :
-    host['coverage'] = 1.0
-host['type'] = "local"
-host['precision'] = float(input("Enter mAP of model = "))
+if not os.path.exists("cc-6/server.json") or loadFrom.lower() == "n":
+    host['name'] = str(input("Enter server name = "))
+    host['ip'] = str(input("Enter Host ip = "))
+    host['port'] = int(input("Enter port number = "))
+    host['coverage'] = float(input("Enter area coverage for the server in sq. m. (Default : 1 sq. m.) = "))
+    if host['coverage'] < 1.0 :
+        host['coverage'] = 1.0
+    host['type'] = "local"
+
+    quality = int(input("Enter input quality parameter (allowed : 1 to 60, default : 15) = "))
+    if quality < 1 or quality > 60:
+        host['quality'] = 480
+    else:
+        host['quality'] = quality*32
+
+    serverFile = open("cc-6/server.json","w")
+    json.dump(host, serverFile)
+else:
+    serverFile = open("cc-6/server.json","r")
+    host = json.load(serverFile)
+
 
 while True:
     tempId = input("Enter cam number = ")
@@ -41,17 +54,8 @@ while True:
     camDict[cid] = capt
     if camDict[cid].read() is None:
         del camDict[cid]
-
-
-quality = int(input("Enter input quality parameter (allowed : 1 to 60, default : 15) = "))
-if quality < 1 or quality > 60:
-    host['quality'] = 480
-else:
-    host['quality'] = quality*32
-
-json.dump(host, serverFile)
 serverFile.close()
-time.sleep(2.0)
+time.sleep(4.0)
 
 
 @app.route("/")

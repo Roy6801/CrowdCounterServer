@@ -1,16 +1,12 @@
 import numpy as np
 import time
 
-def process_data(data_arr, fps, mAP):
-    n_arr = np.array(data_arr)
-    erf = (1 - mAP)/mAP
-    val = np.sqrt(np.mean(n_arr**2))
-    rect_val = val + erf*val
-    if len(data_arr) > 5*int(round(fps)):
-        del data_arr[0]
-        return data_arr, int(round(rect_val))
-    else:
-        return data_arr, int(round(rect_val))
+
+def overlap(he, bo):
+    a = min(he[1] + he[3], bo[1] + bo[3]) - max(he[1], bo[1])
+    b = min(he[0] + he[2], bo[0] + bo[2]) - max(he[0], bo[0])
+    intersection = a * b
+    return (intersection/(he[2] * he[3])) * 100
 
 
 def process_time(ts):
