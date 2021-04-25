@@ -1,5 +1,5 @@
 # CrowdCounterServer
-This is the GPU version of the Server.
+This can run on CPU as well as GPU. For GPU support follow this:-
 
 Requirements:-
 1) Nvidia GPU with CUDA support.
