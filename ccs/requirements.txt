@@ -2,4 +2,4 @@ flask
 imutils
 matplotlib
 pyrebase4
-urllib3==1.26.2
+urllib3==1.26.4
